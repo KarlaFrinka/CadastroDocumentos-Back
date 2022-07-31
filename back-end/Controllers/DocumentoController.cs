@@ -49,12 +49,13 @@ namespace QualyTeamTest.Controller
                                      Codigo = documento.Codigo,
                                      Titulo = documento.Titulo,
                                      Processo = documento.Processo,
-                                     Categoria = documento.Categoria,
-                                     Arquivo = documento.Arquivo
+                                     Categoria = documento.Categoria
+                                     
                                  };
+            
             if (documentoGeral.Any()) 
             {
-                return Ok(documentoGeral);
+                return Ok(documentoGeral.OrderBy(o => o.Titulo));
             }
             return BadRequest();
         }
