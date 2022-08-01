@@ -25,18 +25,23 @@ namespace QualyTeamTest.Controller
         [HttpPost]
         [Produces("application/json")]
 
-        public ActionResult<ReadDocumentoDto> CadastrarDocumento(CreateDocumentoDto createDocumentoDto)
+        public ActionResult<ReadDocumentoDto> CadastrarDocumento(CreateDocumentoDto createDocumentoDto, IFormFile file)
         {
-            var documentoConvertido = _mapper.Map<Documento>(createDocumentoDto);
-            _context.Documento.Add(documentoConvertido);
-            
-            if (_context.SaveChanges () > 0) 
-            { 
-                var documentoReadConvertido = _mapper.Map<ReadDocumentoDto>(documentoConvertido);
-                return Ok(documentoReadConvertido);
-            } 
-            return BadRequest();
+            if (ChecarCodigo(createDocumentoDto.Codigo))
+            {
+                var documentoConvertido = _mapper.Map<Documento>(createDocumentoDto);
+                _context.Documento.Add(documentoConvertido);
+
+                if (_context.SaveChanges() > 0)
+                {
+                    var documentoReadConvertido = _mapper.Map<ReadDocumentoDto>(documentoConvertido);
+                    return Ok(documentoReadConvertido);
+                }
+                return BadRequest();
+            }
+            return BadRequest("Código já cadastrado");
         }
+           
        
         [HttpGet]
        
@@ -103,6 +108,13 @@ namespace QualyTeamTest.Controller
                 return NoContent();
             }
             return BadRequest();
+        }
+
+        private bool ChecarCodigo (int c)
+        {
+            var consultaCod = _context.Documento.FirstOrDefault(d => d.Codigo == c);
+            if (consultaCod != null) return false;
+            return true;
         }
 
     }

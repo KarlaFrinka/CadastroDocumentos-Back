@@ -8,13 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy  =>
-                      {
-                          policy.WithOrigins("http://localhost:3000",
-                                             "https://localhost:7020"
-                                            ).WithMethods("PUT", "DELETE", "GET", "POST");
-                      });
+    options.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
+    //options.AddPolicy(name: MyAllowSpecificOrigins,
+    //                  policy =>
+    //                  {
+    //                      policy.WithOrigins("http://localhost:3000",
+    //                                         "https://localhost:7020"
+    //                                        ).WithMethods("PUT", "DELETE", "GET", "POST");
+    //                  });
 });
 
 
