@@ -25,7 +25,7 @@ namespace QualyTeamTest.Controller
         [HttpPost]
         [Produces("application/json")]
 
-        public ActionResult<ReadDocumentoDto> CadastrarDocumento(CreateDocumentoDto createDocumentoDto, IFormFile file)
+        public ActionResult<ReadDocumentoDto> CadastrarDocumento(CreateDocumentoDto createDocumentoDto)
         {
             if (ChecarCodigo(createDocumentoDto.Codigo))
             {
