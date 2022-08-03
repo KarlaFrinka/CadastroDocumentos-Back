@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using QualyTeamTest.Data;
 using QualyTeamTest.Data.Dto.DocumentoDto;
 using QualyTeamTest.Models;
@@ -48,17 +47,18 @@ namespace QualyTeamTest.Controller
         public ActionResult<List<ReadDocumentoDto>> ConsultarDocumentoGeral()
         {
             var documentoGeral = from documento in _context.Documento
+                                 join processo in _context.Processo on documento.IdProcesso equals processo.Id 
                                  select new ReadDocumentoDto()
                                  {
                                      Id = documento.Id,
                                      Codigo = documento.Codigo,
                                      Titulo = documento.Titulo,
-                                     Processo = documento.Processo,
+                                     Processo = processo,
                                      Categoria = documento.Categoria
                                      
                                  };
             
-            if (documentoGeral.Any()) 
+            if (documentoGeral.ToList().Any()) 
             {
                 return Ok(documentoGeral.OrderBy(o => o.Titulo));
             }
@@ -70,14 +70,24 @@ namespace QualyTeamTest.Controller
 
         public ActionResult<ReadDocumentoDto> ConsultarDocumentoPorId(int id)
         {
-            var documentoConsultaPorId = _context.Documento.FirstOrDefault(d => d.Id == id);
-            if (documentoConsultaPorId != null) 
+            var documentoGeral = from documento in _context.Documento
+                                 join processo in _context.Processo on documento.IdProcesso equals processo.Id
+                                 where documento.Id == id
+                                 select new ReadDocumentoDto()
+                                 {
+                                     Id = documento.Id,
+                                     Codigo = documento.Codigo,
+                                     Titulo = documento.Titulo,
+                                     Processo = processo,
+                                     Categoria = documento.Categoria
+
+                                 };
+
+            if (documentoGeral.ToList().Any())
             {
-                var documentoConsultaPorIdConvertido = _mapper.Map<ReadDocumentoDto>(documentoConsultaPorId);
-                return Ok(documentoConsultaPorIdConvertido);
+                return Ok(documentoGeral.OrderBy(o => o.Titulo));
             }
             return BadRequest();
-            
         }
 
       
